@@ -23,10 +23,10 @@ internal sealed class DomInterop
 		await module.InvokeVoidAsync( $"{JavaScriptPrefix}.nextFrame" );
 	}
 
-	public async ValueTask<BoundingClientRect> GetBoundingClientRectAsync( ElementReference element )
+	public async ValueTask<BoundingClientRect?> GetBoundingClientRectAsync( ElementReference element )
 	{
 		var module = await _moduleTask.Value;
-		return await module.InvokeAsync<BoundingClientRect>( $"{JavaScriptPrefix}.getBoundingClientRect", element );
+		return await module.InvokeAsync<BoundingClientRect?>( $"{JavaScriptPrefix}.getBoundingClientRect", element );
 	}
 
 	public async ValueTask<DocumentDirection> GetDocumentDirectionAsync()

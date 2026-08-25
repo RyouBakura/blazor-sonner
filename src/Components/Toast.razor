@@ -180,10 +180,19 @@
 
     private async Task SetHeightAsync()
     {
-        var height = ( await DomInterop.GetBoundingClientRectAsync( _toastRef ) ).Height;
-        _initialHeight = height;
+        var rect = await DomInterop.GetBoundingClientRectAsync( _toastRef );
 
-        await OnHeightChanged.InvokeAsync( new Height( Model.Id, height ) );
+        // The toast was dismissed while the measurement was still in flight, so its element
+        // has already left the DOM. Reporting a height for it now would leave a stale entry
+        // in the toaster, offsetting every toast that follows.
+        if( rect is null )
+        {
+            return;
+        }
+
+        _initialHeight = rect.Height;
+
+        await OnHeightChanged.InvokeAsync( new Height( Model.Id, rect.Height ) );
     }
 
     void IDisposable.Dispose()
